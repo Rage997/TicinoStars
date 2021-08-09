@@ -1,6 +1,6 @@
-body {
+/* body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: -apple-system; BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -10,11 +10,120 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+} */
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  width: '100vw';
+  min-height: '100wh';
+}
+ 
+#title{
+  display: flex;
+  align-items: center;
+  flex-flow: row;
+  justify-content: center;
+  padding-bottom: 0%;
+  /* padding: auto; */
+  /* width: 10vw; */
+  /* height: 30vh; */
+}
+
+#title h1{
+  /* See: https://developers.google.com/fonts/docs/getting_started
+  for the fonts */
+  font-family: 'Tangerine', serif !important;
+  font-size: 48px;
+  text-shadow: 4px 4px 4px #aaa;
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+#title img{
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  width: 50px;
+}
+
+.card {
+  background-color: white;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
 }
 
 
-.map{
-  height: 75vh;
-  width: 80vw;
-  position: relative 
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
 }
+
+.icon-btn:hover {
+  opacity: 0.3;
+}
+
+#map{
+  /* position: relative; */
+
+/* position:absolute;  */
+/* top:0;  */
+/* bottom:0;  */
+/* width:100%; */
+}
+
+.marker-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.marker-btn:hover {
+  outline: auto;
+}
+
+.marker-btn img {
+  width: 10px;
+  height: 10px;
+}
+
+.mapboxgl-canvas {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#modal {
+  position: absolute;
+  top: 0;
+  left: 66%;
+  width: 33%;
+  height: 100vh;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media only screen 
+  and (min-device-width: 0px) 
+  and (max-device-width: 812px) 
+  and (-webkit-min-device-pixel-ratio: 1) {
+
+    #modal {
+      left: 0;
+      width: 100%;  
+    }
+}
+
