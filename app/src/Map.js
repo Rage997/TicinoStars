@@ -88,7 +88,7 @@ function Map() {
                   }
                 }}
               >
-                <img src="/meme.png" alt="test"></img>
+                <img src="images/star_logo.png" alt="test"></img>
               </button>
             </Marker>
           );

@@ -7,8 +7,42 @@
         "geometry": {
           "type": "Point",
           "coordinates": [
-            9.019603729248047,
-            46.192071404095856
+            8.968877792358398,
+            46.00566264429441
+          ]
+        },
+        "key": 0,
+        "content": {
+          "title": "Villa Castagnola",
+          "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+          "img": "images/villa_castagnola.png"
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            8.78580093383789,
+            46.169429361404354
+          ]
+        },
+        "key": 3,
+        "content": {
+          "title": "Villa Locargnola",
+          "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+          "img": "images/locarno.jpg"
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            9.012908935546875,
+            46.19789383396713
           ]
         },
         "key": 1,
