@@ -6,5 +6,7 @@ In the end, due to a lack of time, the website never got completed but may be us
  
 # TODOs
 [ ] Insert all 9 michelin stars in stars.json file. Use: https://geojson.io/#map=10/46.0818/8.8811
+
 [ ] Add Ticino Land of Stars Logo (make one?)
+
 [ ] ...future work (?)
