@@ -1,106 +1,110 @@
-import React, {useState, useRef, useCallback} from 'react';
-import DeckGL from '@deck.gl/react';
-import {ScatterplotLayer} from '@deck.gl/layers';
-import {StaticMap} from 'react-map-gl';
-import {IconLayer} from '@deck.gl/layers';
-import {MapboxLayer} from '@deck.gl/mapbox';
+// import { Popup } from "mapbox-gl";
+import React, { useState } from "react";
+import ReactMapGL, { Marker, FlyToInterpolator } from "react-map-gl";
+import * as TicinoStars from "./data/stars.json";
+import Modal from "./Modal";
 
-const MAPBOX_TOKEN = "pk.eyJ1IjoicmFnZTk5NyIsImEiOiJja3J4Zmd4dmcwcHR4Mm5uOHl0cXNxNWdhIn0.spr-aZIVDY4VGYCUh6K11w"
+const MAPBOX_TOKEN =
+  "pk.eyJ1IjoicmFnZTk5NyIsImEiOiJja3J4Zmd4dmcwcHR4Mm5uOHl0cXNxNWdhIn0.spr-aZIVDY4VGYCUh6K11w";
 
+// Map centered in Ticino
 const INITIAL_VIEW_STATE = {
   longitude: 8.874958110344565,
   latitude: 46.22002254055144,
   zoom: 8.7,
   pitch: 0,
-  bearing: 0
+  bearing: 0,
+  width: "100wh",
+  height: "100vh",
 };
 
-const ICON_MAPPING = {
-  marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
-};
-
-const data = [
-  {position: [8.874958110344565, 46.22002254055144], size: 100}
-];
+const MAP_BOUNDS = [
+  [8.3331298828125, 45.69850658738846], // Southwest coordinates
+  [9.43450927734375, 46.59190029349218] // Northeast coordinates
+  ];
+   
 
 function Map() {
-  // DeckGL and mapbox will both draw into this WebGL context
-  const [glContext, setGLContext] = useState();
-  const deckRef = useRef(null);
-  const mapRef = useRef(null);
+  const [viewPort, setViewPort] = useState(INITIAL_VIEW_STATE);
+  const [selectedStar, setSelectedStar] = useState({});
+  const [show, setShow] = useState(false);
 
-  const onMapLoad = useCallback(() => {
-    const map = mapRef.current.getMap();
-    const deck = deckRef.current.deck;
+  const goToCoords = (coords) => {
+    setViewPort({
+      ...viewPort,
+      longitude: coords[0],
+      latitude: coords[1],
+      zoom: 10,
+      transitionDuration: 2000,
+      transitionInterpolator: new FlyToInterpolator(),
+    });
+  };
 
-    // You must initialize an empty deck.gl layer to prevent flashing
-    map.addLayer(
-      // This id has to match the id of the deck.gl layer
-      new MapboxLayer({ id: "my-scatterplot", deck }),
-      // Optionally define id from Mapbox layer stack under which to add deck layer
-      'beforeId'
-    );
-    map.addLayer(
-      // This id has to match the id of the deck.gl layer
-      new IconLayer({ id: "icon-layer", deck }),
-      // Optionally define id from Mapbox layer stack under which to add deck layer
-      'beforeId'
-    );
-    
-  }, []);
-
-  const layers = [
-    new ScatterplotLayer({
-      id: 'my-scatterplot',
-      data,
-      getPosition: d => d.position,
-      getRadius: d => d.size,
-      getFillColor: [0, 0, 0]
-    }),
-    new IconLayer({
-      id: 'icon-layer',
-      data,
-      pickable: true,
-      // iconAtlas and iconMapping are required
-      // getIcon: return a string
-      iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
-      iconMapping: ICON_MAPPING,
-      getIcon: d => 'marker',
-  
-      sizeScale: 15,
-      getPosition: d => d.coordinates,
-      getSize: d => 5,
-      getColor: d => [Math.sqrt(d.exits), 140, 0]
-    })
-  ];
-
+  const clampBoundary = (viewPort) => {
+    // Handles viewport boundary limit
+    // SouthWeast boundary
+    if (viewPort.longitude < MAP_BOUNDS[0][0]) {
+      viewPort.longitude = MAP_BOUNDS[0][0];
+    }
+    if (viewPort.latitude < MAP_BOUNDS[0][1]) {
+      viewPort.latitude = MAP_BOUNDS[0][1];
+    }
+    // NorthEast boundary
+    if (viewPort.longitude > MAP_BOUNDS[1][0]) {
+      viewPort.longitude = MAP_BOUNDS[1][0];
+    }
+    if (viewPort.latitude > MAP_BOUNDS[1][1]) {
+      viewPort.latitude = MAP_BOUNDS[1][1];
+    }
+  }  
 
   return (
-    <DeckGL
-      // Resizing the map components yield to the wrong size of the map..
-      // width={'75vh'} 
-      // height={'80vw'}
-      ref={deckRef}
-      layers={layers}
-      initialViewState={INITIAL_VIEW_STATE}
-      controller={true}
-      onWebGLInitialized={setGLContext}
-      glOptions={{
-        /* To render vector tile polygons correctly */
-        stencil: true
-      }}
-    >
-      {glContext && (
-        /* This is important: Mapbox must be instantiated after the WebGLContext is available */
-        <StaticMap
-          ref={mapRef}
-          gl={glContext}
-          mapStyle="mapbox://styles/rage997/ckrwcnr5w1qg118qpghum80zk"
-          mapboxApiAccessToken={MAPBOX_TOKEN}
-          onLoad={onMapLoad}
-        />
-      )}
-    </DeckGL>
+    <div id="map">
+      <Modal show={show} setShow={setShow} content={selectedStar.content} />
+
+      <ReactMapGL
+        {...viewPort}
+        mapboxApiAccessToken={MAPBOX_TOKEN}
+        onViewportChange={(viewPort) => {
+          clampBoundary(viewPort);
+          setViewPort(viewPort);
+        }}
+        mapStyle="mapbox://styles/rage997/ckrwcnr5w1qg118qpghum80zk"
+      >
+        {TicinoStars.features.map((star) => {
+          let coords = star.geometry.coordinates;
+          return (
+            <Marker key={star.key} longitude={coords[0]} latitude={coords[1]}>
+              <button
+                className="marker-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (star.key !== selectedStar.key) {
+                    setSelectedStar(star);
+                    setShow(true);
+                    goToCoords(star.geometry.coordinates)
+                  } else {
+                    setShow(!show);
+                  }
+                }}
+              >
+                <img src="/meme.png" alt="test"></img>
+              </button>
+            </Marker>
+          );
+        })}
+
+        {/* {selectedStar ? (
+        // console.log(selectedStar)
+        <Popup longitude={ selectedStar.geometry.coordinates[0]} 
+          latitude={ selectedStar.geometry.coordinates[1]}>
+          <div>
+            Hello there
+          </div>
+        </Popup>
+      ) : null} */}
+      </ReactMapGL>
+    </div>
   );
 }
 
